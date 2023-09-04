@@ -1,0 +1,41 @@
+﻿@model List<Api.Models.HotelViewModel>
+
+@{
+    ViewData["Title"] = "List Hotels";
+}
+
+<h1>List Hotels</h1>
+
+<p>
+    <a asp-action="AddHotel">Create New</a>
+</p>
+
+<div class="row">
+    @foreach (var hotel in ViewBag.hotels)
+    {
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">@hotel.Name</h5>
+                    <h6 class="card-subtitle mb-2 text-muted">Stars: @hotel.Stars</h6>
+                    <p class="card-text">@hotel.Address</p>
+                    <p class="card-text">Phone: @hotel.PhoneNumber</p>
+                    <h6 class="card-subtitle mb-2 text-muted">Rooms:</h6>
+                    <ul>
+                        @foreach (var room in hotel.SelectedRooms)
+                        {
+                            <li>
+                                Name: @room.Name<br />
+                                Max Guests: @room.MaxGuests
+                            </li>
+                        }
+                    </ul>
+                    <div class="btn-group" role="group">
+                        <a asp-action="EditHotel" asp-route-id="@hotel.Id" class="btn btn-primary">Edit</a>
+                        <a asp-action="DeleteHotel" asp-route-id="@hotel.Id" class="btn btn-danger">Delete</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+</div>

@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.7.34024.191
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebAppHotel", "WebAppHotel\WebAppHotel.csproj", "{BA2213A7-C7D6-4C91-A214-54FE5CF5D865}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{845ABB4E-E030-4A42-A1ED-49699F990FA4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{2872C9B4-424C-46D2-A13D-DE4D0354C5B1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{BA2213A7-C7D6-4C91-A214-54FE5CF5D865}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BA2213A7-C7D6-4C91-A214-54FE5CF5D865}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BA2213A7-C7D6-4C91-A214-54FE5CF5D865}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BA2213A7-C7D6-4C91-A214-54FE5CF5D865}.Release|Any CPU.Build.0 = Release|Any CPU
+		{845ABB4E-E030-4A42-A1ED-49699F990FA4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{845ABB4E-E030-4A42-A1ED-49699F990FA4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{845ABB4E-E030-4A42-A1ED-49699F990FA4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{845ABB4E-E030-4A42-A1ED-49699F990FA4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2872C9B4-424C-46D2-A13D-DE4D0354C5B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2872C9B4-424C-46D2-A13D-DE4D0354C5B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2872C9B4-424C-46D2-A13D-DE4D0354C5B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2872C9B4-424C-46D2-A13D-DE4D0354C5B1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {77E0181A-B2B7-43A2-8A32-13B5F285E28D}
+	EndGlobalSection
+EndGlobal
