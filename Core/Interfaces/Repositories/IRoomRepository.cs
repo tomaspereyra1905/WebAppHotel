@@ -10,6 +10,6 @@ namespace Core.Interfaces.Repositories
     public interface IRoomRepository
     {
         List<Room> GetRooms();
-
+        Task<IEnumerable<Room>> GetRoomsAsync();
     }
 }

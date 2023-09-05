@@ -10,6 +10,6 @@ namespace Core.Interfaces.Services
     public interface IRoomService
     {
         List<Room> GetRooms();
-
+        Task<IEnumerable<Room>> GetRoomsAsync();
     }
 }

@@ -20,5 +20,9 @@ namespace Core.Services
         {
             return _roomRepository.GetRooms();
         }
+        public Task<IEnumerable<Room>> GetRoomsAsync()
+        {
+            return _roomRepository.GetRoomsAsync();
+        }
     }
 }

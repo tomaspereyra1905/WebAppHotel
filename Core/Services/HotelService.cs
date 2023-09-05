@@ -23,6 +23,11 @@ namespace Core.Services
             return _hotelRepository.AddHotel(hotel);
         }
 
+        public Task<bool> AddHotelAsync(Hotel hotel)
+        {
+            return _hotelRepository.AddHotelAsync(hotel);
+        }
+
         public bool DeleteHotel(Hotel hotel)
         {
             return _hotelRepository.DeleteHotel(hotel);
@@ -33,9 +38,19 @@ namespace Core.Services
             return _hotelRepository.GetHotelById(Id);
         }
 
+        public Task<IEnumerable<Hotel>> GetHotelByIdAsync(int Id)
+        {
+            return _hotelRepository.GetHotelByIdAsync(Id);
+        }
+
         public List<Hotel> GetHotels()
         {
             return _hotelRepository.GetHotels();
+        }
+
+        public Task<IEnumerable<Hotel>> GetHotelsAsync()
+        {
+            return _hotelRepository.GetHotelsAsync();
         }
 
         public bool UpdateHotel(Hotel hotel, List<int> newRoomIds)

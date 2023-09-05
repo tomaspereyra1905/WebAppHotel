@@ -2,11 +2,9 @@
 using AutoMapper;
 using Core.Entities;
 using Core.Interfaces.Services;
-using Infrastructure.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using NuGet.Protocol.Core.Types;
+using System.Collections;
 using System.Diagnostics;
 using WebAppHotel.Models;
 
@@ -26,9 +24,9 @@ namespace WebAppHotel.Controllers
             this.roomSrv = roomSrv;
         }
 
-        public IActionResult ListHotels()
+        public async Task<IActionResult> ListHotels()
         {
-            var hotels = hotelSrv.GetHotels();
+            var hotels = await hotelSrv.GetHotelsAsync();
 
             var hotelsVM = hotels.Select(hotel =>
             {
@@ -44,19 +42,19 @@ namespace WebAppHotel.Controllers
         }
 
 
-        public IActionResult AddHotel()
+        public async Task<IActionResult> AddHotel()
         {
-            var rooms = roomSrv.GetRooms();
+            IEnumerable rooms = await roomSrv.GetRoomsAsync();
             ViewBag.Rooms = new SelectList(rooms, "Id", "Name");
             return View(new HotelViewModel());
         }
 
         [HttpPost]
-        public IActionResult AddHotel(HotelViewModel hotel)
+        public async Task<IActionResult> AddHotel(HotelViewModel hotel)
         {
             try
             {
-                if(hotel.Name != null && hotel.RoomIds != null && hotel.Address != null && hotel.PhoneNumber != null)
+                if(ModelState.IsValid && hotel.RoomIds != null)
                 {
                     var hotelEntity = mapper.Map<Hotel>(hotel);
 
@@ -69,19 +67,20 @@ namespace WebAppHotel.Controllers
                         }).ToList();
                     }
 
-                    var result = hotelSrv.AddHotel(hotelEntity);
+                    var result = await hotelSrv.AddHotelAsync(hotelEntity);
 
                     if (!result)
                     {
                         throw new ApplicationException("No se pudo insertar el hotel");
                     }
-                    ListHotels();
+                    await ListHotels();
                     return RedirectToAction("ListHotels");
                 }
                 else
                 {
-                    var rooms = roomSrv.GetRooms();
+                    IEnumerable rooms = await roomSrv.GetRoomsAsync();
                     ViewBag.Rooms = new SelectList(rooms, "Id", "Name");
+                    if(hotel.RoomIds == null) ModelState.AddModelError(string.Empty, "You must select at least one room");
                     return View();
                 }
             }
@@ -97,24 +96,24 @@ namespace WebAppHotel.Controllers
             }
         }
 
-        public IActionResult EditHotel(int Id)
+        public async Task<IActionResult> EditHotel(int Id)
         {
-            var hotelEntity = hotelSrv.GetHotelById(Id);
+            var hotelEntity = (await hotelSrv.GetHotelByIdAsync(Id)).FirstOrDefault();
             var hotelVM = mapper.Map<HotelViewModel>(hotelEntity);
-            hotelVM.RoomIds = hotelEntity.HotelRooms?.Select(hr => hr.RoomId).ToList();
-            hotelVM.SelectedRooms = hotelEntity.HotelRooms?.Select(hr => hr.Room).ToList();
+            hotelVM.RoomIds = hotelEntity?.HotelRooms?.Select(hr => hr.RoomId).ToList();
+            hotelVM.SelectedRooms = hotelEntity?.HotelRooms?.Select(hr => hr.Room).ToList();
 
             if (hotelVM == null)
             {
                 return NotFound();
             }
-            var rooms = roomSrv.GetRooms();
+            IEnumerable rooms = await roomSrv.GetRoomsAsync();
             ViewBag.Rooms = new SelectList(rooms, "Id", "Name");
             return View(hotelVM);
         }
 
         [HttpPost]
-        public IActionResult EditHotel(HotelViewModel hotelViewModel)
+        public async Task<IActionResult> EditHotel(HotelViewModel hotelViewModel)
         {
             if (hotelViewModel == null)
             {
@@ -123,23 +122,27 @@ namespace WebAppHotel.Controllers
 
             try
             {
-                var existingHotel = hotelSrv.GetHotelById(hotelViewModel.Id);
+                var existingHotel = await hotelSrv.GetHotelByIdAsync(hotelViewModel.Id);
 
                 if (existingHotel == null)
                 {
                     return NotFound("Hotel no encontrado");
                 }
 
-                existingHotel.Name = hotelViewModel.Name;
-                existingHotel.Stars = hotelViewModel.Stars;
-                existingHotel.Address = hotelViewModel.Address;
-                existingHotel.PhoneNumber = hotelViewModel.PhoneNumber;
+                foreach (var hotel in existingHotel)
+                {
+                    hotel.Name = hotelViewModel.Name;
+                    hotel.Stars = hotelViewModel.Stars;
+                    hotel.Address = hotelViewModel.Address;
+                    hotel.PhoneNumber = hotelViewModel.PhoneNumber;
+                }
 
                 var newRoomIds = hotelViewModel.RoomIds ?? new List<int>();
+                var existingHotelEntity = existingHotel.FirstOrDefault();
 
-                if (hotelSrv.UpdateHotel(existingHotel, newRoomIds))
+                if (hotelSrv.UpdateHotel(existingHotelEntity, newRoomIds))
                 {
-                    ListHotels();
+                    await ListHotels();
                     return RedirectToAction("ListHotels");
                 }
                 else
@@ -159,13 +162,13 @@ namespace WebAppHotel.Controllers
             }
         }
 
-        public IActionResult DeleteHotel([FromRoute] int Id)
+        public async Task<IActionResult> DeleteHotel([FromRoute] int Id)
         {
             try
             {
-                var hotelEntity = hotelSrv.GetHotelById(Id);
-                var result = hotelSrv.DeleteHotel(hotelEntity);
-                ListHotels();
+                var hotelEntity = await hotelSrv.GetHotelByIdAsync(Id);
+                var result = hotelSrv.DeleteHotel(hotelEntity.FirstOrDefault());
+                await ListHotels();
                 return RedirectToAction("ListHotels");
             }
             catch (ApplicationException ex)

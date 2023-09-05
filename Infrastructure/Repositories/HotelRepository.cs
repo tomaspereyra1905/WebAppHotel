@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -28,6 +29,23 @@ namespace Infrastructure.Repositories
                 .OrderBy(hotel => hotel.Id)
                 .ToList();
         }
+        public async Task<IEnumerable<Hotel>> GetHotelsAsync() => await dbContext.Hotels
+            .Include(hotel => hotel.HotelRooms)
+            .ThenInclude(hotelRoom => hotelRoom.Room)
+            .OrderBy(hotel => hotel.Id)
+            .ToListAsync();
+        public async Task<IEnumerable<Hotel>> GetHotelByIdAsync(int Id)
+        {
+            var hotel = await dbContext.Hotels
+            .Include(hotel => hotel.HotelRooms)
+                .ThenInclude(hotelRoom => hotelRoom.Room)
+                .Where(hotel => hotel.Id == Id)
+                .OrderBy(hotel => hotel.Id)
+                .FirstOrDefaultAsync();
+
+            return hotel != null ? new List<Hotel> { hotel } : new List<Hotel>();
+        }
+
         public Hotel GetHotelById(int Id)
         {
             var hotel = dbContext.Hotels
@@ -38,6 +56,20 @@ namespace Infrastructure.Repositories
                 .FirstOrDefault();
 
             return hotel;
+        }
+
+        public async Task<bool> AddHotelAsync(Hotel hotel)
+        {
+            try
+            {
+                await dbContext.Hotels.AddAsync(hotel);
+                await dbContext.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
 
         public bool AddHotel(Hotel hotel)

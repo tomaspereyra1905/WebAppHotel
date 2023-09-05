@@ -1,6 +1,7 @@
 ﻿using Core.Entities;
 using Core.Interfaces.Repositories;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,5 +23,6 @@ namespace Infrastructure.Repositories
                 .OrderBy(room => room.Id)
                 .ToList();
         }
+        public async Task<IEnumerable<Room>> GetRoomsAsync() => await dbContext.Rooms.OrderBy(room => room.Id).ToListAsync();
     }
 }
